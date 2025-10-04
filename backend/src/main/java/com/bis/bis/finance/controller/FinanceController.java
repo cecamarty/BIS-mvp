@@ -1,15 +1,16 @@
-package com.bis.finance.controller;
+package com.bis.bis.finance.controller;
 
-import com.bis.finance.model.Expense;
-import com.bis.finance.model.Revenue;
-import com.bis.finance.repository.ExpenseRepository;
-import com.bis.finance.repository.RevenueRepository;
+import com.bis.bis.finance.model.Expense;
+import com.bis.bis.finance.model.Revenue;
+import com.bis.bis.finance.repository.ExpenseRepository;
+import com.bis.bis.finance.repository.RevenueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/finance")
 public class FinanceController {

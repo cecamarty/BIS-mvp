@@ -1,6 +1,6 @@
-package com.bis.finance.repository;
+package com.bis.bis.finance.repository;
 
-import com.bis.finance.model.Expense;
+import com.bis.bis.finance.model.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {

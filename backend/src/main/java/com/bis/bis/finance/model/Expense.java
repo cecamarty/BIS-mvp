@@ -1,4 +1,4 @@
-package com.bis.finance.model;
+package com.bis.bis.finance.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
