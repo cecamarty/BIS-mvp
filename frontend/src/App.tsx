@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
+import { getProfit, addRevenue, addExpense } from './services/api';
+import ProfitDisplay from './components/ProfitDisplay';
+import RevenueForm from './components/RevenueForm';
+import ExpenseForm from './components/ExpenseForm';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [profit, setProfit] = useState<number | null>(null);
+
+  const fetchProfit = async () => {
+    try {
+      const response = await getProfit();
+      setProfit(response.data.profit);
+    } catch (error) {
+      console.error("Error fetching profit:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfit();
+  }, []);
+
+  const handleAddRevenue = async (description: string, amount: number) => {
+    try {
+      const revenueData = { description, amount, date: new Date().toISOString().split('T')[0] };
+      await addRevenue(revenueData);
+      fetchProfit(); // Refresh profit after adding revenue
+    } catch (error) {
+      console.error("Error adding revenue:", error);
+    }
+  };
+
+  const handleAddExpense = async (description: string, amount: number) => {
+    try {
+      const expenseData = { description, amount, date: new Date().toISOString().split('T')[0] };
+      await addExpense(expenseData);
+      fetchProfit(); // Refresh profit after adding expense
+    } catch (error) {
+      console.error("Error adding expense:", error);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <header className="App-header">
+        <h1>Expense & Profit Management</h1>
+      </header>
+      <main>
+        <ProfitDisplay profit={profit} />
+        <div className="forms-container">
+          <RevenueForm onAddRevenue={handleAddRevenue} />
+          <ExpenseForm onAddExpense={handleAddExpense} />
+        </div>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
