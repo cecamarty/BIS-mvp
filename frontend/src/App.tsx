@@ -1,59 +1,35 @@
-import { useState, useEffect } from 'react';
-import './App.css';
-import { getProfit, addRevenue, addExpense } from './services/api';
-import ProfitDisplay from './components/ProfitDisplay';
-import RevenueForm from './components/RevenueForm';
-import ExpenseForm from './components/ExpenseForm';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import Login from './components/Login';
+import Register from './components/Register';
+import ProtectedRoute from './components/ProtectedRoute';
+import { DashboardLayout } from './components/layout/DashboardLayout';
+import DashboardPage from './pages/DashboardPage';
+import RevenuesPage from './pages/RevenuesPage';
+import ExpensesPage from './pages/ExpensesPage';
+import ReportsPage from './pages/ReportsPage';
+import SettingsPage from './pages/SettingsPage';
 
 function App() {
-  const [profit, setProfit] = useState<number | null>(null);
-
-  const fetchProfit = async () => {
-    try {
-      const response = await getProfit();
-      setProfit(response.data.profit);
-    } catch (error) {
-      console.error("Error fetching profit:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfit();
-  }, []);
-
-  const handleAddRevenue = async (description: string, amount: number) => {
-    try {
-      const revenueData = { description, amount, date: new Date().toISOString().split('T')[0] };
-      await addRevenue(revenueData);
-      fetchProfit(); // Refresh profit after adding revenue
-    } catch (error) {
-      console.error("Error adding revenue:", error);
-    }
-  };
-
-  const handleAddExpense = async (description: string, amount: number) => {
-    try {
-      const expenseData = { description, amount, date: new Date().toISOString().split('T')[0] };
-      await addExpense(expenseData);
-      fetchProfit(); // Refresh profit after adding expense
-    } catch (error) {
-      console.error("Error adding expense:", error);
-    }
-  };
+  const { isAuthenticated } = useAuth();
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Expense & Profit Management</h1>
-      </header>
-      <main>
-        <ProfitDisplay profit={profit} />
-        <div className="forms-container">
-          <RevenueForm onAddRevenue={handleAddRevenue} />
-          <ExpenseForm onAddExpense={handleAddExpense} />
-        </div>
-      </main>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/revenues" element={<RevenuesPage />} />
+          <Route path="/expenses" element={<ExpensesPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
+      </Route>
+      
+      <Route path="*" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} />} />
+    </Routes>
   );
 }
 
