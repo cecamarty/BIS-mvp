@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { AuthRequest } from '../dto/AuthRequest.ts';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'https://bis-mvp.onrender.com',     // https://bis-mvp.onrender.com  or http://localhost:8080/api
   headers: {
     'Content-Type': 'application/json',
   },
