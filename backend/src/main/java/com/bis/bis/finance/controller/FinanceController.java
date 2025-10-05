@@ -59,6 +59,10 @@ public class FinanceController {
 
         BigDecimal profit = totalRevenue.subtract(totalExpense);
 
-        return Map.of("profit", profit);
+        return Map.of(
+            "totalRevenue", totalRevenue,
+            "totalExpense", totalExpense,
+            "profit", profit
+        );
     }
 }

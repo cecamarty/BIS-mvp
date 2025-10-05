@@ -26,13 +26,11 @@ export default function DashboardPage() {
     try {
       setError(null);
       const response = await getProfit();
-      const profit = response.data.profit || 0;
-      
-      // TODO: Replace with actual data from API endpoints for totalRevenue and totalExpense
+      const { totalRevenue, totalExpense, profit } = response.data;
       setFinancialData({
-        totalRevenue: profit > 0 ? Math.abs(profit) * 1.5 : 0,
-        totalExpense: profit > 0 ? Math.abs(profit) * 0.5 : Math.abs(profit),
-        profit: profit,
+        totalRevenue: totalRevenue || 0,
+        totalExpense: totalExpense || 0,
+        profit: profit || 0,
       });
     } catch (err: any) {
       console.error('Error fetching financial data:', err);
