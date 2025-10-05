@@ -3,6 +3,7 @@ import { addExpense, getExpenses } from '@/services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { formatCurrency, formatDate } from '@/lib/utils';
 
 type Expense = {
   id: number;
@@ -51,21 +52,6 @@ export default function ExpensesPage() {
     } catch (error) {
       console.error('Error adding expense:', error);
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
   };
 
   return (
@@ -135,34 +121,54 @@ export default function ExpensesPage() {
               <p className="text-sm">Click "Add Expense" to get started</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="border-b">
-                  <tr className="text-left">
-                    <th className="pb-3 font-medium">Description</th>
-                    <th className="pb-3 font-medium">Amount</th>
-                    <th className="pb-3 font-medium">Date</th>
-                    <th className="pb-3 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {expenses.map((expense) => (
-                    <tr key={expense.id} className="border-b last:border-0">
-                      <td className="py-3">{expense.description}</td>
-                      <td className="py-3 text-red-600 font-semibold">
-                        -{formatCurrency(expense.amount)}
-                      </td>
-                      <td className="py-3 text-muted-foreground">{formatDate(expense.date)}</td>
-                      <td className="py-3">
-                        <Button variant="ghost" size="sm">Edit</Button>
-                        <Button variant="ghost" size="sm" className="text-destructive">
-                          Delete
-                        </Button>
-                      </td>
+            <div>
+              {/* Desktop Table */}
+              <div className="hidden md:block">
+                <table className="w-full">
+                  <thead className="border-b">
+                    <tr className="text-left">
+                      <th className="pb-3 font-medium">Description</th>
+                      <th className="pb-3 font-medium">Amount</th>
+                      <th className="pb-3 font-medium">Date</th>
+                      <th className="pb-3 font-medium">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {expenses.map((expense) => (
+                      <tr key={expense.id} className="border-b last:border-0">
+                        <td className="py-3">{expense.description}</td>
+                        <td className="py-3 text-red-600 font-semibold">
+                          -{formatCurrency(expense.amount)}
+                        </td>
+                        <td className="py-3 text-muted-foreground">{formatDate(expense.date)}</td>
+                        <td className="py-3">
+                          <Button variant="ghost" size="sm">Edit</Button>
+                          <Button variant="ghost" size="sm" className="text-destructive">
+                            Delete
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card List */}
+              <div className="md:hidden space-y-4">
+                {expenses.map((expense) => (
+                  <div key={expense.id} className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="font-medium">{expense.description || "Expense"}</div>
+                      <div className="text-red-600 font-semibold">-{formatCurrency(expense.amount)}</div>
+                    </div>
+                    <div className="text-sm text-muted-foreground mt-1 mb-3">{formatDate(expense.date)}</div>
+                    <div className="flex justify-end gap-2">
+                      <Button variant="ghost" size="sm">Edit</Button>
+                      <Button variant="ghost" size="sm" className="text-destructive">Delete</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </CardContent>

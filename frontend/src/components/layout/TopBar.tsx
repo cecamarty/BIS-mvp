@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 
-export function TopBar() {
+export function TopBar({ setSidebarOpen }: { setSidebarOpen: (isOpen: boolean) => void }) {
   const { logout } = useAuth();
   const [isDark, setIsDark] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -13,7 +13,17 @@ export function TopBar() {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-6 dark:border-gray-800 dark:bg-gray-950">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-4 sm:px-6 dark:border-gray-800 dark:bg-gray-950">
+      {/* Mobile Sidebar Toggle */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="md:hidden"
+        onClick={() => setSidebarOpen(true)}
+      >
+        <span>☰</span>
+      </Button>
+
       <div className="flex flex-1 items-center gap-4">
         {/* Search Bar */}
         <div className="flex-1 max-w-md">

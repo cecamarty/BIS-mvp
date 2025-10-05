@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getProfit } from '@/services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatCurrency } from '@/lib/utils';
 
 type FinancialData = {
   totalRevenue: number;
@@ -27,8 +28,7 @@ export default function DashboardPage() {
       const response = await getProfit();
       const profit = response.data.profit || 0;
       
-      // For now, we'll calculate based on profit
-      // You'll need to add API endpoints for totalRevenue and totalExpense
+      // TODO: Replace with actual data from API endpoints for totalRevenue and totalExpense
       setFinancialData({
         totalRevenue: profit > 0 ? Math.abs(profit) * 1.5 : 0,
         totalExpense: profit > 0 ? Math.abs(profit) * 0.5 : Math.abs(profit),
@@ -36,15 +36,11 @@ export default function DashboardPage() {
       });
     } catch (err: any) {
       console.error('Error fetching financial data:', err);
-      
-      // Check if it's a 403 (authentication error)
       if (err.response?.status === 403) {
         setError('Authentication required. Please log in again.');
       } else {
         setError('Unable to load financial data. Using default values.');
       }
-      
-      // Set default data so the UI still renders
       setFinancialData({
         totalRevenue: 0,
         totalExpense: 0,
@@ -53,13 +49,6 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
   };
 
   const summaryCards = [
@@ -99,7 +88,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-gray-500 dark:text-gray-400">
@@ -107,7 +95,6 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Error Alert */}
       {error && (
         <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800">
           <div className="flex items-center gap-2">
@@ -124,7 +111,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         {summaryCards.map((card, index) => (
           <Card key={index} className={card.bgColor}>
@@ -149,7 +135,6 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Charts Row */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -157,7 +142,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-              Chart will be here (install recharts)
+              Chart will be here (recharts)
             </div>
           </CardContent>
         </Card>
@@ -168,13 +153,12 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-              Chart will be here (install recharts)
+              Chart will be here (recharts)
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent Transactions */}
       <Card>
         <CardHeader>
           <CardTitle>Recent Transactions</CardTitle>
